@@ -1,0 +1,50 @@
+@import '../styles/abstracts/variables';
+@import '../styles/abstracts/mixins';
+
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: $spacing-lg;
+  margin-top: $spacing-xl;
+
+  @include respond-to('md') {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to('lg') {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include respond-to('xl') {
+    grid-template-columns:  repeat(4, 1fr);
+  }
+}
+
+.product-card {
+  @include card;
+  padding: $spacing-md;
+  cursor: pointer;
+
+  img {
+    width:  100%;
+    height: 200px;
+    object-fit: contain;
+    margin-bottom: $spacing-md;
+  }
+
+  h3 {
+    font-size: $font-size-base;
+    color:  $text-secondary;
+    margin-bottom: $spacing-xs;
+  }
+
+  p {
+    margin-bottom: $spacing-sm;
+  }
+
+  .price {
+    font-size:  $font-size-lg;
+    font-weight: 600;
+    color: $primary-color;
+  }
+}
