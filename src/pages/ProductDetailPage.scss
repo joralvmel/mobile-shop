@@ -1,0 +1,92 @@
+@import '../styles/abstracts/variables';
+@import '../styles/abstracts/mixins';
+
+.back-link {
+  display: inline-block;
+  color: $primary-color;
+  margin-bottom: $spacing-lg;
+  font-weight: 500;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.product-detail {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-xl;
+  margin-top: $spacing-lg;
+
+  @include respond-to('md') {
+    grid-template-columns:  1fr 1fr;
+  }
+
+  &__image {
+    @include card;
+    padding: $spacing-xl;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    img {
+      max-width: 100%;
+      max-height: 500px;
+      object-fit: contain;
+    }
+  }
+
+  &__info {
+    h1 {
+      font-size: $font-size-xxl;
+      margin-bottom: $spacing-md;
+    }
+  }
+
+  &__price {
+    font-size: $font-size-xl;
+    font-weight: 700;
+    color: $primary-color;
+    margin-bottom: $spacing-xl;
+  }
+
+  &__specs {
+    margin-bottom: $spacing-xl;
+
+    h2 {
+      font-size: $font-size-xl;
+      margin-bottom: $spacing-lg;
+    }
+
+    .spec-item {
+      padding: $spacing-md 0;
+      border-bottom: 1px solid $border-color;
+
+      strong {
+        color: $text-secondary;
+        margin-right: $spacing-sm;
+      }
+    }
+  }
+}
+
+.btn-add-to-cart {
+  width: 100%;
+  padding: $spacing-md $spacing-xl;
+  background: $primary-color;
+  color: $white;
+  border: none;
+  border-radius: $border-radius-md;
+  font-size: $font-size-lg;
+  font-weight: 600;
+  cursor: pointer;
+  transition: $transition-base;
+
+  &:hover {
+    background: darken($primary-color, 10%);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+}
