@@ -1,0 +1,18 @@
+@import '../abstracts/variables';
+@import '../abstracts/mixins';
+
+
+.container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 $spacing-md;
+
+  @include respond-to('md') {
+    padding: 0 $spacing-lg;
+  }
+
+  @include respond-to('lg') {
+    padding: 0 $spacing-xl;
+  }
+}

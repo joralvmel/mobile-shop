@@ -1,0 +1,63 @@
+@import '../abstracts/variables';
+
+// Flexbox
+@mixin flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Responsive
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == 'sm' {
+    @media (min-width: $breakpoint-sm) { @content; }
+  }
+  @if $breakpoint == 'md' {
+    @media (min-width: $breakpoint-md) { @content; }
+  }
+  @if $breakpoint == 'lg' {
+    @media (min-width: $breakpoint-lg) { @content; }
+  }
+  @if $breakpoint == 'xl' {
+    @media (min-width: $breakpoint-xl) { @content; }
+  }
+}
+
+// Card
+@mixin card {
+  background:  $white;
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-sm;
+  transition: $transition-base;
+
+  &:hover {
+    box-shadow: $shadow-md;
+  }
+}
+
+// Truncate text
+@mixin truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+// Button reset
+@mixin button-reset {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+}
