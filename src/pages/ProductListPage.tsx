@@ -6,11 +6,13 @@ interface Product {
     brand:  string;
     model: string;
     price: string;
-    imgUrl:  string;
+    imgUrl: string;
 }
 
 function ProductListPage() {
     const [products, setProducts] = useState<Product[]>([]);
+    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+    const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -25,6 +27,7 @@ function ProductListPage() {
 
                 const data = await response. json();
                 setProducts(data);
+                setFilteredProducts(data);
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'An error occurred');
             } finally {
@@ -34,6 +37,20 @@ function ProductListPage() {
 
         fetchProducts();
     }, []);
+
+    useEffect(() => {
+        if (searchTerm. trim() === '') {
+            setFilteredProducts(products);
+            return;
+        }
+
+        const filtered = products.filter(
+            (product) =>
+                product. brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                product.model.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilteredProducts(filtered);
+    }, [searchTerm, products]);
 
     if (loading) {
         return (
@@ -55,16 +72,30 @@ function ProductListPage() {
         <div className="container">
             <h1>All Products</h1>
 
-            <div className="products-grid">
-                {products.map((product) => (
-                    <div key={product.id} className="product-card">
-                        <img src={product.imgUrl} alt={product.model} />
-                        <h3>{product.brand}</h3>
-                        <p>{product. model}</p>
-                        <p className="price">{product.price}</p>
-                    </div>
-                ))}
+            <div className="search-box">
+                <input
+                    type="text"
+                    placeholder="Search by brand or model..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="search-input"
+                />
             </div>
+
+            {filteredProducts.length === 0 ? (
+                <p className="no-results">No products found matching "{searchTerm}"</p>
+            ) : (
+                <div className="products-grid">
+                    {filteredProducts.map((product) => (
+                        <div key={product.id} className="product-card">
+                            <img src={product.imgUrl} alt={product.model} />
+                            <h3>{product.brand}</h3>
+                            <p>{product.model}</p>
+                            <p className="price">{product.price}</p>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }
