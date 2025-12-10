@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './ProductListPage.scss';
 
 interface Product {
@@ -15,6 +16,7 @@ function ProductListPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -52,6 +54,10 @@ function ProductListPage() {
         setFilteredProducts(filtered);
     }, [searchTerm, products]);
 
+    const handleProductClick = (productId:  string) => {
+        navigate(`/product/${productId}`);
+    };
+
     if (loading) {
         return (
             <div className="container">
@@ -87,7 +93,11 @@ function ProductListPage() {
             ) : (
                 <div className="products-grid">
                     {filteredProducts.map((product) => (
-                        <div key={product.id} className="product-card">
+                        <div
+                            key={product.id}
+                            className="product-card"
+                            onClick={() => handleProductClick(product.id)}
+                        >
                             <img src={product.imgUrl} alt={product.model} />
                             <h3>{product.brand}</h3>
                             <p>{product.model}</p>
