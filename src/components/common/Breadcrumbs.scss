@@ -1,0 +1,39 @@
+@import '../../styles/abstracts/variables';
+@import '../../styles/abstracts/mixins';
+
+.breadcrumbs {
+  background:  $white;
+  border-bottom: 1px solid $border-color;
+  padding: $spacing-sm 0;
+  font-size: $font-size-sm;
+
+  &__list {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+  }
+
+  &__item {
+    display: flex;
+    align-items: center;
+    gap: $spacing-sm;
+  }
+
+  &__link {
+    color: $primary-color;
+    transition: $transition-base;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__separator {
+    color: $text-secondary;
+  }
+
+  &__current {
+    color: $text-secondary;
+  }
+}
