@@ -19,7 +19,7 @@
   margin-top: $spacing-lg;
 
   @include respond-to('md') {
-    grid-template-columns:  1fr 1fr;
+    grid-template-columns: 1fr 1fr;
   }
 
   &__image {
@@ -70,6 +70,43 @@
   }
 }
 
+.selector {
+  margin-bottom: $spacing-lg;
+
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: $spacing-sm;
+    color: $text-primary;
+  }
+
+  &__options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $spacing-sm;
+  }
+
+  &__option {
+    padding: $spacing-sm $spacing-md;
+    border: 2px solid $border-color;
+    background: $white;
+    border-radius: $border-radius-sm;
+    cursor: pointer;
+    transition: $transition-base;
+    font-size: $font-size-base;
+
+    &:hover {
+      border-color: $primary-color;
+    }
+
+    &.selected {
+      border-color: $primary-color;
+      background: $primary-color;
+      color: $white;
+    }
+  }
+}
+
 .btn-add-to-cart {
   width: 100%;
   padding: $spacing-md $spacing-xl;
@@ -82,11 +119,17 @@
   cursor: pointer;
   transition: $transition-base;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: darken($primary-color, 10%);
   }
 
-  &:active {
+  &:active:not(:disabled) {
     transform: scale(0.98);
+  }
+
+  &:disabled {
+    background: $text-secondary;
+    cursor: not-allowed;
+    opacity: 0.6;
   }
 }
