@@ -21,7 +21,7 @@ function ProductListPage() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('https://itx-frontend-test.onrender.com/api/product');
+                const response = await fetch('/api/product');
 
                 if (!response.ok) {
                     throw new Error('Error fetching products');

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { useCart } from '../context/CartContext';
 import './ProductDetailPage.scss';
 
 interface ProductOption {
@@ -33,17 +34,19 @@ interface Product {
 
 function ProductDetailPage() {
     const { id } = useParams();
+    const { addToCart } = useCart();
     const [product, setProduct] = useState<Product | null>(null);
     const [selectedColor, setSelectedColor] = useState<number | null>(null);
     const [selectedStorage, setSelectedStorage] = useState<number | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [isAddingToCart, setIsAddingToCart] = useState(false);
 
     useEffect(() => {
         const fetchProduct = async () => {
             try {
                 const response = await fetch(
-                    `https://itx-frontend-test.onrender.com/api/product/${id}`
+                    `/api/product/${id}`
                 );
 
                 if (!response.ok) {
@@ -56,7 +59,7 @@ function ProductDetailPage() {
                 if (data.options?.colors && data.options.colors.length > 0) {
                     setSelectedColor(data.options.colors[0].code);
                 }
-                if (data. options?.storages && data.options.storages.length > 0) {
+                if (data.options?.storages && data.options.storages.length > 0) {
                     setSelectedStorage(data.options.storages[0].code);
                 }
             } catch (err) {
@@ -72,25 +75,26 @@ function ProductDetailPage() {
     const formatArrayField = (field: string[] | string | undefined) => {
         if (!field) return null;
         if (Array.isArray(field)) {
-            return field.join(', ');
+            return field. join(', ');
         }
         return field;
     };
 
-    const handleAddToCart = () => {
-        if (!selectedColor || !selectedStorage) {
-            alert('Please select color and storage');
+    const handleAddToCart = async () => {
+        if (!product || !selectedColor || !selectedStorage) {
             return;
         }
 
-        // TODO: Implement actual add to cart logic
-        console.log('Adding to cart:', {
-            id: product?.id,
-            colorCode: selectedColor,
-            storageCode: selectedStorage,
-        });
+        setIsAddingToCart(true);
 
-        alert('Product added to cart!');
+        try {
+            await addToCart(product.id, selectedColor, selectedStorage);
+            alert('Product added to cart successfully!');
+        } catch (err) {
+            alert('Error adding product to cart.  Please try again.');
+        } finally {
+            setIsAddingToCart(false);
+        }
     };
 
     if (loading) {
@@ -146,31 +150,31 @@ function ProductDetailPage() {
 
                         {product.displaySize && (
                             <div className="spec-item">
-                                <strong>Screen Size:</strong> {product.displaySize}
+                                <strong>Screen Size: </strong> {product.displaySize}
                             </div>
                         )}
 
                         {product.displayResolution && (
                             <div className="spec-item">
-                                <strong>Screen Resolution:</strong> {product.displayResolution}
+                                <strong>Screen Resolution: </strong> {product.displayResolution}
                             </div>
                         )}
 
                         {product.battery && (
                             <div className="spec-item">
-                                <strong>Battery:</strong> {product.battery}
+                                <strong>Battery: </strong> {product.battery}
                             </div>
                         )}
 
                         {product.primaryCamera && (
                             <div className="spec-item">
-                                <strong>Primary Camera:</strong> {formatArrayField(product.primaryCamera)}
+                                <strong>Primary Camera: </strong> {formatArrayField(product.primaryCamera)}
                             </div>
                         )}
 
                         {product.secondaryCmera && (
                             <div className="spec-item">
-                                <strong>Secondary Camera:</strong> {formatArrayField(product.secondaryCmera)}
+                                <strong>Secondary Camera: </strong> {formatArrayField(product.secondaryCmera)}
                             </div>
                         )}
 
@@ -187,14 +191,13 @@ function ProductDetailPage() {
                         )}
                     </div>
 
-                    {/* Color Selector */}
                     {product.options?.colors && product.options.colors.length > 0 && (
                         <div className="selector">
-                            <label>Color:</label>
+                            <label>Color: </label>
                             <div className="selector__options">
                                 {product.options.colors.map((color) => (
                                     <button
-                                        key={color.code}
+                                        key={color. code}
                                         className={`selector__option ${
                                             selectedColor === color.code ? 'selected' : ''
                                         }`}
@@ -207,7 +210,6 @@ function ProductDetailPage() {
                         </div>
                     )}
 
-                    {/* Storage Selector */}
                     {product.options?.storages && product.options.storages.length > 0 && (
                         <div className="selector">
                             <label>Storage:</label>
@@ -216,11 +218,11 @@ function ProductDetailPage() {
                                     <button
                                         key={storage.code}
                                         className={`selector__option ${
-                                            selectedStorage === storage.code ? 'selected' : ''
+                                            selectedStorage === storage.code ?  'selected' : ''
                                         }`}
                                         onClick={() => setSelectedStorage(storage.code)}
                                     >
-                                        {storage. name}
+                                        {storage.name}
                                     </button>
                                 ))}
                             </div>
@@ -230,9 +232,9 @@ function ProductDetailPage() {
                     <button
                         className="btn-add-to-cart"
                         onClick={handleAddToCart}
-                        disabled={!selectedColor || !selectedStorage}
+                        disabled={!selectedColor || ! selectedStorage || isAddingToCart}
                     >
-                        Add to Cart
+                        {isAddingToCart ? 'Adding...' :  'Add to Cart'}
                     </button>
                 </div>
             </div>

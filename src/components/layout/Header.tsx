@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
+import { useCart } from '../../context/CartContext';
 import './Header.scss';
 
 function Header() {
+    const { cartCount } = useCart();
+
     return (
         <header className="header">
             <div className="container">
@@ -11,7 +14,7 @@ function Header() {
                     </Link>
 
                     <div className="header__cart">
-                        Cart:  <span className="header__cart-count">0</span>
+                        Cart:  <span className="header__cart-count">{cartCount}</span>
                     </div>
                 </div>
             </div>
