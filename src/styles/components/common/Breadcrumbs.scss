@@ -1,16 +1,16 @@
-@import '../../styles/abstracts/variables';
-@import '../../styles/abstracts/mixins';
+@import '../../abstracts/variables';
+@import '../../abstracts/mixins';
 
 .breadcrumbs {
-  background:  $white;
-  border-bottom: 1px solid $border-color;
-  padding: $spacing-sm 0;
-  font-size: $font-size-sm;
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e9ecef;
+  padding: $spacing-md 0;
 
   &__list {
     display: flex;
-    align-items: center;
-    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0;
     gap: $spacing-sm;
   }
 
@@ -22,6 +22,7 @@
 
   &__link {
     color: $primary-color;
+    text-decoration: none;
     transition: $transition-base;
 
     &:hover {
@@ -29,11 +30,12 @@
     }
   }
 
-  &__separator {
+  &__current {
     color: $text-secondary;
+    font-weight: 500;
   }
 
-  &__current {
+  &__separator {
     color: $text-secondary;
   }
 }

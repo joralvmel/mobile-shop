@@ -1,0 +1,9 @@
+@import '../abstracts/variables';
+@import '../abstracts/mixins';
+
+.no-results {
+  text-align: center;
+  color: $text-secondary;
+  margin-top: $spacing-xl;
+  font-size: $font-size-lg;
+}

@@ -9,14 +9,32 @@
 // Layout
 @import './layout/container';
 
-// Components
+// Components - Common
+@import './components/common/Breadcrumbs';
+
+// Components - Layout
+@import './components/layout/Header';
+
+// Components - Product
+@import './components/product/SearchBox';
+@import './components/product/ProductCard';
+@import './components/product/ProductGrid';
+@import './components/product/ProductImage';
+@import './components/product/ProductSpecs';
+@import './components/product/ProductActions';
+
+// Pages
+@import './pages/ProductListPage';
+@import './pages/ProductDetailPage';
+
+// App layout
 .app {
-  min-height:  100vh;
-  display:  flex;
-  flex-direction:  column;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .main-content {
-  flex:  1;
+  flex: 1;
   padding: $spacing-xl 0;
 }

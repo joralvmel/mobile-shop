@@ -1,75 +1,14 @@
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { cache } from '../utils/cache';
-import './ProductListPage.scss';
-
-interface Product {
-    id: string;
-    brand:  string;
-    model: string;
-    price: string;
-    imgUrl: string;
-}
-
-const CACHE_KEY = 'products_list';
+import { useApi } from '@/hooks/useApi';
+import { useProductSearch } from '@/hooks/useProductSearch';
+import { productService } from '@/services/productService';
+import SearchBox from '@/components/product/SearchBox';
+import ProductGrid from '@/components/product/ProductGrid';
 
 function ProductListPage() {
-    const [products, setProducts] = useState<Product[]>([]);
-    const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-    const [searchTerm, setSearchTerm] = useState('');
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        const fetchProducts = async () => {
-            const cachedData = cache.get<Product[]>(CACHE_KEY);
-
-            if (cachedData) {
-                console.log('📦 Loading products from cache');
-                setProducts(cachedData);
-                setFilteredProducts(cachedData);
-                setLoading(false);
-                return;
-            }
-
-            try {
-                console.log('🌐 Fetching products from API');
-                const response = await fetch('/api/product');
-
-                if (!response.ok) {
-                    throw new Error('Error fetching products');
-                }
-
-                const data = await response.json();
-
-                cache.set(CACHE_KEY, data);
-
-                setProducts(data);
-                setFilteredProducts(data);
-            } catch (err) {
-                setError(err instanceof Error ? err.message : 'An error occurred');
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchProducts();
-    }, []);
-
-    useEffect(() => {
-        if (searchTerm. trim() === '') {
-            setFilteredProducts(products);
-            return;
-        }
-
-        const filtered = products.filter(
-            (product) =>
-                product. brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                product.model.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-        setFilteredProducts(filtered);
-    }, [searchTerm, products]);
+    const { data: products, loading, error } = useApi(() => productService.getProducts());
+    const { searchTerm, setSearchTerm, filteredProducts } = useProductSearch(products || []);
 
     const handleProductClick = (productId: string) => {
         navigate(`/product/${productId}`);
@@ -95,33 +34,19 @@ function ProductListPage() {
         <div className="container">
             <h1>All Products</h1>
 
-            <div className="search-box">
-                <input
-                    type="text"
-                    placeholder="Search by brand or model..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="search-input"
-                />
-            </div>
+            <SearchBox
+                value={searchTerm}
+                onChange={setSearchTerm}
+                placeholder="Search by brand or model..."
+            />
 
-            {filteredProducts.length === 0 ? (
+            {filteredProducts.length === 0 && searchTerm ? (
                 <p className="no-results">No products found matching "{searchTerm}"</p>
             ) : (
-                <div className="products-grid">
-                    {filteredProducts.map((product) => (
-                        <div
-                            key={product.id}
-                            className="product-card"
-                            onClick={() => handleProductClick(product.id)}
-                        >
-                            <img src={product.imgUrl} alt={product.model} />
-                            <h3>{product.brand}</h3>
-                            <p>{product.model}</p>
-                            <p className="price">{product.price}€</p>
-                        </div>
-                    ))}
-                </div>
+                <ProductGrid
+                    products={filteredProducts}
+                    onProductClick={handleProductClick}
+                />
             )}
         </div>
     );

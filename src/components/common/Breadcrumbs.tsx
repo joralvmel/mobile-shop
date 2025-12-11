@@ -1,5 +1,4 @@
 import { Link, useLocation } from 'react-router-dom';
-import './Breadcrumbs.scss';
 
 interface BreadcrumbItem {
     label: string;

@@ -1,0 +1,16 @@
+.product-specs {
+  h2 {
+    margin-bottom: 1rem;
+  }
+
+  .spec-item {
+    margin-bottom: 0.75rem;
+    line-height: 1.6;
+
+    strong {
+      display: inline-block;
+      min-width: 180px;
+      color: #333;
+    }
+  }
+}
