@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { cache } from '../utils/cache';
 import './ProductListPage.scss';
 
 interface Product {
@@ -9,6 +10,8 @@ interface Product {
     price: string;
     imgUrl: string;
 }
+
+const CACHE_KEY = 'products_list';
 
 function ProductListPage() {
     const [products, setProducts] = useState<Product[]>([]);
@@ -20,14 +23,28 @@ function ProductListPage() {
 
     useEffect(() => {
         const fetchProducts = async () => {
+            const cachedData = cache.get<Product[]>(CACHE_KEY);
+
+            if (cachedData) {
+                console.log('📦 Loading products from cache');
+                setProducts(cachedData);
+                setFilteredProducts(cachedData);
+                setLoading(false);
+                return;
+            }
+
             try {
+                console.log('🌐 Fetching products from API');
                 const response = await fetch('/api/product');
 
                 if (!response.ok) {
                     throw new Error('Error fetching products');
                 }
 
-                const data = await response. json();
+                const data = await response.json();
+
+                cache.set(CACHE_KEY, data);
+
                 setProducts(data);
                 setFilteredProducts(data);
             } catch (err) {
@@ -54,7 +71,7 @@ function ProductListPage() {
         setFilteredProducts(filtered);
     }, [searchTerm, products]);
 
-    const handleProductClick = (productId:  string) => {
+    const handleProductClick = (productId: string) => {
         navigate(`/product/${productId}`);
     };
 
@@ -101,7 +118,7 @@ function ProductListPage() {
                             <img src={product.imgUrl} alt={product.model} />
                             <h3>{product.brand}</h3>
                             <p>{product.model}</p>
-                            <p className="price">{product.price}</p>
+                            <p className="price">{product.price}€</p>
                         </div>
                     ))}
                 </div>

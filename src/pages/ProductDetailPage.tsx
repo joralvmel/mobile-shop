@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { cache } from '../utils/cache';
 import './ProductDetailPage.scss';
 
 interface ProductOption {
@@ -44,16 +45,39 @@ function ProductDetailPage() {
 
     useEffect(() => {
         const fetchProduct = async () => {
+            if (!id) return;
+
+            const cacheKey = `product_${id}`;
+
+            const cachedData = cache.get<Product>(cacheKey);
+
+            if (cachedData) {
+                console.log(`📦 Loading product ${id} from cache`);
+                setProduct(cachedData);
+
+                if (cachedData.options?.colors && cachedData.options.colors.length > 0) {
+                    setSelectedColor(cachedData.options.colors[0]. code);
+                }
+                if (cachedData.options?.storages && cachedData.options. storages.length > 0) {
+                    setSelectedStorage(cachedData.options.storages[0].code);
+                }
+
+                setLoading(false);
+                return;
+            }
+
             try {
-                const response = await fetch(
-                    `/api/product/${id}`
-                );
+                console. log(`🌐 Fetching product ${id} from API`);
+                const response = await fetch(`/api/product/${id}`);
 
                 if (!response.ok) {
                     throw new Error('Error fetching product');
                 }
 
                 const data = await response.json();
+
+                cache.set(cacheKey, data);
+
                 setProduct(data);
 
                 if (data.options?.colors && data.options.colors.length > 0) {
@@ -75,7 +99,7 @@ function ProductDetailPage() {
     const formatArrayField = (field: string[] | string | undefined) => {
         if (!field) return null;
         if (Array.isArray(field)) {
-            return field. join(', ');
+            return field.join(', ');
         }
         return field;
     };
